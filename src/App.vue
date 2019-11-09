@@ -6,80 +6,10 @@
         <section id="container">
             <section id="main">
                 <div class="content">
-                    <div id="profile-container" class="tab active">
-                        <div id="profile">
-                            <div class="avatar">
-                                <img src="./assets/me.png" id="picture" alt="My picture">
-                            </div>
-                            <div class="info">
-                                <ul>
-                                    <li id="name">John Doe</li>
-                                    <li id="birthdate">11/10/1990</li>
-                                    <li id="faculty">Software Engineering</li>
-                                </ul>
-                            </div>
-                            <div id="gpa">
-                                <strong>2.75</strong>
-                            </div>
-                            <div class="clear-fix"></div>
-                        </div>
-                    </div>
-                    <div id="courses-container" class="tab">
-                        <h1 class="title">Courses</h1>
-                        <table id="courses">
-                            <thead>
-                            <tr>
-                                <th>#</th>
-                                <th>Course Title</th>
-                                <th>Semester</th>
-                                <th>Grade</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            <tr>
-                                <td>1</td>
-                                <td>Agile software development</td>
-                                <td>1</td>
-                                <td>82</td>
-                            </tr>
-                            <tr>
-                                <td>2</td>
-                                <td>System modeling</td>
-                                <td>1</td>
-                                <td>85</td>
-                            </tr>
-                            <tr>
-                                <td>3</td>
-                                <td>Object-oriented programming</td>
-                                <td>2</td>
-                                <td>99</td>
-                            </tr>
-                            <tr>
-                                <td>4</td>
-                                <td>Estonian language Level A2</td>
-                                <td>2</td>
-                                <td>65</td>
-                            </tr>
-                            </tbody>
-                        </table>
-                        <br>
-                        <br>
-                        <div>
-                            <button id="add-course-button" class="blue-button">+</button>
-                            <span id="add-course">
-                                <input class="input" type="text" placeholder="Course title" id="title">
-                                <input class="input" type="number" min="1" max="8" placeholder="Semester" id="semester">
-                                <input class="input" type="number" min="0" max="100" placeholder="Grade" id="grade">
-                                <button class="green-button" id="save-course">Save</button>
-                                <button class="grey-button" id="cancel-course">Cancel</button>
-                            </span>
-                        </div>
-                    </div>
+                    <Profile :user="user" :tab="tabs.profile" :calculateGpa="calculateGpa"></Profile>
+                    <Courses :courses="courses" :tab="tabs.courses"></Courses>
                 </div>
-                <div class="controls">
-                    <button id="profile-button" class="pill active">Profile</button>
-                    <button id="courses-button" class="pill">Courses</button>
-                </div>
+                <Controls :selectTab="selectTab" :tabs="tabs"></Controls>
             </section>
         </section>
         <footer>
@@ -97,9 +27,60 @@
 
 <script>
 
+    import Profile from "./components/Profile";
+    import Courses from "./components/Courses"
+    import User from './models/User'
+    import Course from './models/Course'
+    import Controls from "./components/Controls";
+
     export default {
         name: 'app',
-        components: {}
+        data: () => {
+            return {
+                user: new User("John", "Doe", "19/11/1990", "Software engineering", "2.75"),
+                courses: [
+                    new Course("Introduction to programming", 1, 21),
+                    new Course("Calculus", 1, 30),
+                    new Course("Python for dummies", 2, 56),
+                    new Course("How to handle school stress", 1, 100)
+                ],
+                tabs: {
+                    'profile': "tab active",
+                    'courses': "tab"
+                }
+            }
+        },
+        methods: {
+            selectTab: function(key) {
+                for (let tabsKey in this.tabs) {
+                    if (tabsKey !== key) {
+                        this.tabs[tabsKey] = "tab";
+                    } else {
+                        this.tabs[tabsKey] = "tab active";
+                    }
+                }
+            },
+            calculateGpa: function() {
+                let sum = 0;
+                const nrOfCourses = this.courses.length;
+                for (let i = 0; i < nrOfCourses; i++) {
+                    if (this.courses[i].grade > 90) {
+                        sum += 4;
+                    } else if (this.courses[i].grade > 80) {
+                        sum += 3;
+                    } else if (this.courses[i].grade > 70) {
+                        sum += 2;
+                    } else if (this.courses[i].grade > 60) {
+                        sum += 1;
+                    } else if (this.courses[i].grade > 50) {
+                        sum += 0.5;
+                    }
+                }
+                this.user.gpa = Math.round((sum / nrOfCourses) * 100) / 100;
+                return this.user.gpa;
+            }
+        },
+        components: {Controls, Profile, Courses}
     }
 </script>
 
