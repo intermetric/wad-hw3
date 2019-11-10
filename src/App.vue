@@ -42,7 +42,8 @@
                     new Course("Introduction to programming", 1, 21),
                     new Course("Calculus", 1, 30),
                     new Course("Python for dummies", 2, 56),
-                    new Course("How to handle school stress", 1, 100)
+                    new Course("How to handle school stress", 1, 100),
+                    new Course("How to make delicious food with student's budget", 2, 100)
                 ],
                 tabs: {
                     'profile': "tab active",
